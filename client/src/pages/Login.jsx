@@ -1,14 +1,15 @@
 import React from "react";
+import Register from "./Register";
 import { useState, useContext, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import { UserContext } from "../context/userContext";
 
-const Register = () => {
+const Login = () => {
   const [userData, setUserData] = useState({
-    email: "",
-    password: "",
+    email: "admin@gmail.com",
+    password: "admin123",
   });
 
   const [error, setError] = useState("");
@@ -26,20 +27,27 @@ const Register = () => {
     }
   };
 
+  console.log(userData);
+
   const loginUser = async (e) => {
     e.preventDefault();
     setError("");
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/users/login`,
-        userData
+        userData,
+        {
+          headers: {
+            "Content-Type":
+              "application/x-www-form-urlencoded; charset=UTF-8;application/json",
+          },
+        }
       );
       const user = await response.data;
       setCurrentUser(user);
-      console.log(user);
       navigate("/");
     } catch (error) {
-      console.log(error.response?.data);
+      // console.log(error.response?.data);
       setError(error.response?.data?.message);
     }
   };
@@ -51,7 +59,7 @@ const Register = () => {
         <form action="" className="form login__form" onSubmit={loginUser}>
           {error && <p className="form__error-message">{error}</p>}
           <input
-            type="text"
+            type="email"
             placeholder="Email"
             name="email"
             value={userData.email}
@@ -66,14 +74,14 @@ const Register = () => {
             onChange={changeInputHandler}
           />
           <small>This is only for authors</small>
-
           <button type="submit" className="btn primary">
             Login
           </button>
+          <Link to="/register"> Register</Link>
         </form>
       </div>
     </section>
   );
 };
 
-export default Register;
+export default Login;
